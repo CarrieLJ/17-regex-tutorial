@@ -1,15 +1,11 @@
-const mongoose = require('mongoose');
-const thoughtSchema = require('./Thought');
+const { Schema, model } = require('mongoose');
 
-const userSchema = new mongoose.Schema ({
-    //need to add in trimmed
-    username: { type: String.trim, required: true, unique: true },
+const userSchema = new Schema ({
+    username: { type: String, required: true, unique: true, trim: true },
     //need to add matching validation
-    email: { type: String, required: true, unique: true },
-    //reference thought model: 
-    thoughts: [thoughtSchema],
-    //reference User model: 
-    friends: [userSchema],
+    email: { type: String, required: true, unique: true, match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']},
+    thoughts: [{ type: Schema.Types.ObjectId, ref: 'Thought', }],
+    friends: [{ type: Schema.Types.ObjectId, ref: 'User', }],
 },
     {
         toJSON: {
@@ -19,37 +15,11 @@ const userSchema = new mongoose.Schema ({
     }
 );
 
-// const U1 = db.model('U1', uniqueUsernameSchema);
-// const U2 = db.model('U2', uniqueUsernameSchema);
-// const dup = [{ username: 'Val' }, { username: 'Val' }];
-// // Race condition! This may save successfully, depending on whether
-// // MongoDB built the index before writing the 2 docs.
-// U1.create(dup).
-//   then(() => {
-//   }).
-//   catch(err => {
-// });
-// // You need to wait for Mongoose to finish building the `unique`
-// // index before writing. You only need to build indexes once for
-// // a given collection, so you normally don't need to do this
-// // in production. But, if you drop the database between tests,
-// // you will need to use `init()` to wait for the index build to finish.
-// U2.init().
-//   then(() => U2.create(dup)).
-//   catch(error => {
-//     // `U2.create()` will error, but will *not* be a mongoose validation error, it will be
-//     // a duplicate key error.
-//     // See: https://masteringjs.io/tutorials/mongoose/e11000-duplicate-key
-//     assert.ok(error);
-//     assert.ok(!error.errors);
-//     assert.ok(error.message.indexOf('duplicate key error') !== -1);
-//   });
-
 //schema settings: create virtual called friendCount that retreives the length of the user's friends array field on query
 userSchema.virtual('friendCount').get(function () {
     return this.friends.length;
 });
 
-const User = model('user', userSchema);
+const User = model('User', userSchema);
 
 module.exports = User;
