@@ -5,7 +5,7 @@ const thoughtSchema = new mongoose.Schema ({
     //use a getter method to format the timestamp on query
     createAt: { type: Date, default: Date.now },
     username: { type: String, required: true },
-    reactions: [{ type: Schema.Types.ObjectId, ref: 'thought' }],
+    reactions: [{ type: Schema.Types.ObjectId, ref: 'reaction' }],
     //array of nested documents created with the reactionSchema
 },
     {
@@ -16,7 +16,6 @@ const thoughtSchema = new mongoose.Schema ({
     }
 );
 
-//schema settings: create virtual called reactionCount that retreives the length of the thought's reactions array field on query
 thoughtSchema.virtual('reactionCount').get(function () {
     return this.reactions.length;
 });
