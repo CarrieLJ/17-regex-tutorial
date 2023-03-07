@@ -5,17 +5,15 @@ const {
   createUser,
   updateUser,
   deleteUser,
+  addFriend,
+  removeFriend,
 } = require('../userController');
 
 router.route('/').get(getUsers).post(createUser);
 
-router.route('/:userId').get(getSingleUser);
+router.route('/:userId').get(getSingleUser).put(updateUser);
+//endpoint: /api/users
 
-router.route('/').put(updateUser);
-
-router.route('/').delete(deleteUser);
-
-//bonus: remove a user's associated thoughts when deleted
-
+router.route('/users/:userId/friends/:friendId').post(addFriend).delete(removeFriend);
 
 module.exports = router;
