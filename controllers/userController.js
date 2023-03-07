@@ -23,7 +23,7 @@ module.exports = {
   // create a new user
   createUser(req, res) {
     User.create(req.body)
-      .then((users) => res.json(users))
+      .then((user) => res.json(user))
       .catch((err) => res.status(500).json(err));
   },
   //update a user
@@ -36,5 +36,39 @@ module.exports = {
         : res.json(users)
     )
     .catch((err) => res.status(500).json(err));
+  },
+  //addFriend
+    addFriend(req, res) {
+      console.log('You are adding a friend');
+      console.log(req.body);
+      User.findOneAndUpdate(
+        { _id: req.params.friendId },
+        { $addToSet: { friends: req.body } },
+        { runValidators: true, new: true }
+      )
+        .then((friends) =>
+          !friends
+            ? res
+                .status(404)
+                .json({ message: 'No friend found with that ID :(' })
+            : res.json(friends)
+        )
+        .catch((err) => res.status(500).json(err));
+    },
+  //remove a friend
+  removeFriend(req, res) {
+    User.findOneAndUpdate(
+      { _id: req.params.friendId },
+      { $pull: { friends: { friendId: req.params.friendId } } },
+      { runValidators: true, new: true }
+    )
+      .then((friends) =>
+        !friends
+          ? res
+              .status(404)
+              .json({ message: 'No friend found with that ID :(' })
+          : res.json(friends)
+      )
+      .catch((err) => res.status(500).json(err));
   },
 };
