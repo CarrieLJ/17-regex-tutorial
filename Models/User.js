@@ -1,13 +1,23 @@
 const mongoose = require('mongoose');
+const thoughtSchema = require('./Thought');
 
 const userSchema = new mongoose.Schema ({
     //need to add in trimmed
-    username: { type: String, required: true, unique: true },
-    //need to add in unique and matching validation
-    email: { type: String, required: true },
-    //reference thought model: thoughts: { array: },
-    //reference User model: friends; {}
-});
+    username: { type: String.trim, required: true, unique: true },
+    //need to add matching validation
+    email: { type: String, required: true, unique: true },
+    //reference thought model: 
+    thoughts: [thoughtSchema],
+    //reference User model: 
+    friends: [userSchema],
+},
+    {
+        toJSON: {
+            virtuals: true,
+        },
+        id: false,
+    }
+);
 
 // const U1 = db.model('U1', uniqueUsernameSchema);
 // const U2 = db.model('U2', uniqueUsernameSchema);
@@ -36,5 +46,10 @@ const userSchema = new mongoose.Schema ({
 //   });
 
 //schema settings: create virtual called friendCount that retreives the length of the user's friends array field on query
+userSchema.virtual('friendCount').get(function () {
+    return this.friends.length;
+});
+
+const User = model('user', userSchema);
 
 module.exports = User;
