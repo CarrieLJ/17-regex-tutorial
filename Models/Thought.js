@@ -1,7 +1,7 @@
 const { Schema, model } = require('mongoose');
 const reactionSchema = require('./Reaction');
 //add this into utils-look at activities
-const format_date = require('../utils/dateformat')
+const { format_date } = require('../utils/dateformat')
 
 const thoughtSchema = new Schema ({
     thoughtText: { type: String, required: true, minLength: 1, maxLength: 280 },
