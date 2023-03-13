@@ -54,37 +54,38 @@ deleteUser(req, res) {
 },
 
   //addFriend
-    addFriend(req, res) {
-      console.log('You are adding a friend');
-      console.log(req.body);
-      User.findOneAndUpdate(
-        { _id: req.params.friendId },
-        { $addToSet: { friends: req.body } },
-        { runValidators: true, new: true }
-      )
-        .then((friends) =>
-          !friends
-            ? res
-                .status(404)
-                .json({ message: 'No friend found with that ID :(' })
-            : res.json(friends)
-        )
-        .catch((err) => res.status(500).json(err));
-    },
-  //remove a friend
-  removeFriend(req, res) {
-    User.findOneAndUpdate(
-      { _id: req.params.friendId },
-      { $pull: { friends: { friendId: req.params.friendId } } },
-      { runValidators: true, new: true }
+addFriend(req, res) {
+  console.log('You are adding a friend');
+  console.log(req.body);
+  User.findOneAndUpdate(
+    { _id: req.params.userId },
+    { $addToSet: { friends: req.body } },
+    { runValidators: true, new: true }
+  )
+    .then((friends) =>
+      !friends
+        ? res
+            .status(404)
+            .json({ message: 'No friend found with that ID :(' })
+        : res.json(friends)
     )
-      .then((friends) =>
-        !friends
-          ? res
-              .status(404)
-              .json({ message: 'No friend found with that ID :(' })
-          : res.json(friends)
-      )
-      .catch((err) => res.status(500).json(err));
-  },
+    .catch((err) => res.status(500).json(err));
+},
+
+//remove a friend
+removeFriend(req, res) {
+  User.findOneAndUpdate(
+    { _id: req.params.userId },
+    { $pull: { friends: { friendId: req.params.friendId } } },
+    { runValidators: true, new: true }
+  )
+    .then((friends) =>
+      !friends
+        ? res
+            .status(404)
+            .json({ message: 'No friend found with that ID :(' })
+        : res.json(friends)
+    )
+    .catch((err) => res.status(500).json(err));
+},
 };
