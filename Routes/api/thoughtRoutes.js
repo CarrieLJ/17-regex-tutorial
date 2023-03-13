@@ -12,6 +12,8 @@ const {
 router.route('/').get(getThought).post(createThought);
 // /api/thoughts/:thoughtId = endpoint
 
+router.route('/:thoughtId').get(getSingleThought);
+
 router.route('/:thoughtId').get(getSingleThought).put(updateThought);
 // /api/thought/:thoughtId/reactions = endpoint
 

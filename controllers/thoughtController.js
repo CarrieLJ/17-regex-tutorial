@@ -11,7 +11,7 @@ module.exports = {
       });
   },
   getSingleThought(req, res) {
-    Thought.findOne({ _id: req.params.userId })
+    Thought.findOne({ _id: req.params.thoughtId })
       .populate({ path: 'reactions', select: '-__v' })
       .then((thoughts) =>
         !thoughts
@@ -45,8 +45,11 @@ module.exports = {
 
   //update a thought
   updateThought(req, res) {
-    Thought.updateOne({ _id: req.params.userId })
-    .populate({ path: 'reactions', select: '-__v' })
+    Thought.findOneAndUpdate(
+      { _id: req.params.thoughtId },
+      { $set: req.body },
+      { runValidators: true, new: true }
+      )
     .then((thoughts) =>
       !thoughts
         ? res.status(404).json({ message: 'No thought with that ID' })
@@ -54,6 +57,7 @@ module.exports = {
     )
     .catch((err) => res.status(500).json(err));
   },
+  
     //add a reaction
     addReaction(req, res) {
       console.log('You are adding a reaction');

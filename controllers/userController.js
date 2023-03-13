@@ -28,8 +28,11 @@ module.exports = {
   },
   //update a user
   updateUser(req, res) {
-    User.updateOne({ _id: req.params.userId })
-    .populate({ path: 'reactions', select: '-__v' })
+    User.findOneAndUpdate(
+      { _id: req.params.userId },
+      { $set: req.body },
+      { runValidators: true, new: true }
+      )
     .then((users) =>
       !users
         ? res.status(404).json({ message: 'No user with that ID' })
@@ -37,6 +40,19 @@ module.exports = {
     )
     .catch((err) => res.status(500).json(err));
   },
+
+  //delete a user
+deleteUser(req, res) {
+  User.findOneAndDelete({ _id: req.params.userId })
+  .then((users) =>
+  !users
+      ? res.stats(404).json({ message: 'No user with that ID' })
+      : Thought.deleteMany({ _id: { $in: thoughts.users } })
+  )
+  .then(() => res.json({ message: 'User and thoughts successfully deleted' }))
+  .catch((err) => res.status(500).json(err));
+},
+
   //addFriend
     addFriend(req, res) {
       console.log('You are adding a friend');
