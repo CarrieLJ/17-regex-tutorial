@@ -45,12 +45,12 @@ module.exports = {
 deleteUser(req, res) {
   User.findOneAndDelete({ _id: req.params.userId })
   .then((users) =>
-  !users
-      ? res.stats(404).json({ message: 'No user with that ID' })
-      : Thought.deleteMany({ _id: { $in: thoughts.users } })
-  )
-  .then(() => res.json({ message: 'User and thoughts successfully deleted' }))
-  .catch((err) => res.status(500).json(err));
+  res.json({ message: 'User has been successfully deleted' }))
+  .catch((err) => {
+    console.log(err)
+    res.status(500).json(err)
+    })
+    // res.status(500).json(err));
 },
 
   //addFriend

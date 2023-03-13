@@ -57,40 +57,51 @@ module.exports = {
     )
     .catch((err) => res.status(500).json(err));
   },
+
+    //delete a thought
+deleteThought(req, res) {
+  Thought.findOneAndDelete({ _id: req.params.thoughtId })
+  .then((thoughts) =>
+  res.json({ message: 'Thought has been successfully deleted' }))
+  .catch((err) => {
+    console.log(err)
+    res.status(500).json(err)
+    })
+},
   
-    //add a reaction
-    addReaction(req, res) {
-      console.log('You are adding a reaction');
-      console.log(req.body);
-      Thought.findOneAndUpdate(
-        { _id: req.params.reactionId },
-        { $addToSet: { reactions: req.body } },
-        { runValidators: true, new: true }
-      )
-        .then((reactions) =>
-          !reactions
-            ? res
-                .status(404)
-                .json({ message: 'No reaction found with that ID :(' })
-            : res.json(reactions)
-        )
-        .catch((err) => res.status(500).json(err));
-    },
-  //remove a reaction
-  removeReaction(req, res) {
-    Thought.findOneAndUpdate(
-      { _id: req.params.reactionId },
-      { $pull: { reactions: { reactionId: req.params.reactionId } } },
-      { runValidators: true, new: true }
+  //add a reaction
+addReaction(req, res) {
+  console.log('You are adding a reaction');
+  console.log(req.body);
+  Thought.findOneAndUpdate(
+    { _id: req.params.reactionId },
+    { $addToSet: { reactions: req.body } },
+    { runValidators: true, new: true }
+  )
+    .then((reactions) =>
+      !reactions
+        ? res
+            .status(404)
+            .json({ message: 'No reaction found with that ID :(' })
+        : res.json(reactions)
     )
-      .then((reactions) =>
-        !reactions
-          ? res
-              .status(404)
-              .json({ message: 'No reaction found with that ID :(' })
-          : res.json(reactions)
-      )
-      .catch((err) => res.status(500).json(err));
+    .catch((err) => res.status(500).json(err));
+},
+//remove a reaction
+removeReaction(req, res) {
+  Thought.findOneAndUpdate(
+    { _id: req.params.reactionId },
+    { $pull: { reactions: { reactionId: req.params.reactionId } } },
+    { runValidators: true, new: true }
+  )
+    .then((reactions) =>
+      !reactions
+        ? res
+            .status(404)
+            .json({ message: 'No reaction found with that ID :(' })
+        : res.json(reactions)
+    )
+    .catch((err) => res.status(500).json(err));
   },
 
 };
